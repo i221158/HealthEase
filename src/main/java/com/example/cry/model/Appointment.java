@@ -2,6 +2,7 @@ package com.example.cry.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Appointments")
@@ -19,9 +20,7 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "doctorID")
     private Doctor doctor;
-
-    private Date appointmentDate;
-
+    private LocalDateTime appointmentDate;
     private String status;
 
     // Getters & Setters
@@ -35,8 +34,8 @@ public class Appointment {
     public Doctor getDoctor() { return doctor; }
     public void setDoctor(Doctor doctor) { this.doctor = doctor; }
 
-    public Date getAppointmentDate() { return appointmentDate; }
-    public void setAppointmentDate(Date appointmentDate) { this.appointmentDate = appointmentDate; }
+    public LocalDateTime getAppointmentDate() { return appointmentDate; }
+    public void setAppointmentDate(LocalDateTime appointmentDate) { this.appointmentDate = appointmentDate; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

@@ -2,6 +2,7 @@ package com.example.cry.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Notifications")
@@ -15,22 +16,17 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "userID")
     private User user;
-
     private String message;
-
-    private Date timestamp;
+    private LocalDateTime timestamp;
 
     // Getters & Setters
-
     public int getNotificationId() { return notificationId; }
     public void setNotificationId(int notificationId) { this.notificationId = notificationId; }
-
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
-
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
 
-    public Date getTimestamp() { return timestamp; }
-    public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 }

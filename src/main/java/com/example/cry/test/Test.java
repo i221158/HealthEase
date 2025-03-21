@@ -1,9 +1,11 @@
 package com.example.cry.test;
-import com.example.cry.model.Patient;
+import com.example.cry.model.*;
+import com.example.cry.system.SystemManager;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import java.util.List;
+import java.time.LocalDateTime;
 
 public class Test {
     public static void main(String[] args) {
@@ -23,24 +25,28 @@ public class Test {
             System.out.println("✅ SQL Server Driver Loaded Successfully!");
 
             // Load Hibernate configuration
-            SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-            Session session = factory.openSession();
-            session.beginTransaction();
+//            SessionFactory factory = new Configuration()
+//                    .configure("hibernate.cfg.xml")
+//                    .addAnnotatedClass(User.class)
+//                    .addAnnotatedClass(Patient.class)
+//                    .addAnnotatedClass(Doctor.class)
+//                    .addAnnotatedClass(Appointment.class)
+//                    .addAnnotatedClass(Notification.class)
+//                    .buildSessionFactory();
 
-            // Run SQL Query
-            //Object result = session.createNativeQuery("SELECT COUNT(*) FROM Patients").getSingleResult();
-            //System.out.println("🩺 Total Patients: " + result);
-            //System.out.println("✅ Query executed successfully, result: " + result);
-            // ✅ HQL to get all patients
-            List<Patient> patients = session.createQuery("FROM Patient", Patient.class).getResultList();
-            for (Patient p : patients) {
-                System.out.println("🧍 " + p.getUserId() + " - " + p.getName() + " - History: " + p.getMedicalHistory());
-            }
+            SystemManager sys = new SystemManager();
 
+            // Test: Add a new patient
+            sys.registerPatient("Test Patient", "test@patient.com", "0987654321", "hashed123", "No known allergies.");
 
-            session.getTransaction().commit();
-            session.close();
-            factory.close();
+            // Test: Add a new doctor
+            sys.registerDoctor("Dr. Zain", "zain@clinic.com", "0987654321", "docpass123", "Neurology", "D1009");
+
+            sys.sendNotification(2, "Your appointment is tomorrow at 9 AM.");
+            sys.scheduleAppointment(2, 7, LocalDateTime.now().plusDays(1));
+            sys.listAppointments();
+            sys.close();
+//            factory.close();
         } catch (Exception e) {
             System.err.println("❌ Hibernate connection failed: " + e.getMessage());
             e.printStackTrace();
