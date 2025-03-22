@@ -97,8 +97,9 @@ public class Test {
             System.out.println("1. Check My Appointments");
             System.out.println("2. Cancel Appointment");
             System.out.println("3. Check Notifications");
-            System.out.println("4. Manage Patient Medical History");
-            System.out.println("5. Logout");
+            System.out.println("4. View Patient Medical History");
+            System.out.println("5. Manage Patient Medical History");
+            System.out.println("6. Logout");
             System.out.print("Select: ");
             int choice = scanner.nextInt();
 
@@ -110,13 +111,14 @@ public class Test {
                 }
                 case 3 -> sys.viewNotifications(doctor.getUserId());
                 case 4 -> {
-                    System.out.print("Patient ID: ");
-                    int pid = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Updated History: ");
-                    String hist = scanner.nextLine();
-                    sys.updatePatientHistory(pid, hist);
+                    System.out.print("Enter Patient ID to view history: ");
+                    int patientId = Integer.parseInt(scanner.nextLine());
+                    sys.viewPatientMedicalHistory(patientId);
                 }
-                case 5 -> { return; }
+                case 5 -> {
+                    sys.managePatientHistory();
+                }
+                case 6 -> { return; }
                 default -> System.out.println("❌ Invalid option");
             }
         }

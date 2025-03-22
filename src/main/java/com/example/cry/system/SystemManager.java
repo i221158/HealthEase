@@ -153,7 +153,6 @@ public class SystemManager {
         Session session = factory.openSession();
         try {
             session.beginTransaction();
-
             Long count = session.createQuery(
                             "SELECT COUNT(u) FROM User u WHERE u.email = :email AND u.passwordHash = :pass", Long.class)
                     .setParameter("email", email)
@@ -447,16 +446,53 @@ public class SystemManager {
             System.err.println("❌ Error removing user: " + e.getMessage());
         }
     }
+    public void managePatientHistory() {
+        Session session = getSession();
+        try {
+            session.beginTransaction();
+            List<Patient> patients = session.createQuery("FROM Patient", Patient.class).getResultList();
+            if (patients.isEmpty()) {
+                System.out.println("❌ No patients found.");
+                return;
+            }
+            //printing all patients
+            System.out.println("📋 All Patients:");
+            for (Patient p : patients) {
+                System.out.println("ID: " + p.getUserId() + ", Name: " + p.getName() + ", Email: " + p.getEmail());
+            }
+            //taking patient id
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter Patient ID to manage: ");
+            int patientId = Integer.parseInt(scanner.nextLine());
+            Patient patient = session.get(Patient.class, patientId);
+            if (patient == null) {
+                System.out.println("❌ Patient not found.");
+                return;
+            }
+            //printing that patient details
+            System.out.println("🧍 Patient: " + patient.getName());
+            System.out.println("📞 Phone: " + patient.getPhone());
+            System.out.println("📧 Email: " + patient.getEmail());
+            System.out.println("📝 Current Medical History: " + patient.getMedicalHistory());
+            //getting new patient medical history
+            System.out.print("Enter new medical history: ");
+            String newHistory = scanner.nextLine();
+            //updating it
+            updatePatientHistory(patientId, newHistory);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            System.err.println("❌ Error managing patient history: " + e.getMessage());
+        }
+    }
     public void updatePatientHistory(int patientId, String history) {
         Session session = getSession();
         try {
             session.beginTransaction();
-
             Patient p = session.get(Patient.class, patientId);
             if (p == null) throw new RuntimeException("Patient not found");
-
+            //setting new medical history in the db
             p.setMedicalHistory(history);
-
             session.getTransaction().commit();
             System.out.println("📋 Medical history updated.");
         } catch (Exception e) {
@@ -633,6 +669,25 @@ public class SystemManager {
         } catch (Exception e) {
             session.getTransaction().rollback();
             System.err.println("❌ Error: " + e.getMessage());
+        }
+    }
+    public void viewPatientMedicalHistory(int patientId) {
+        Session session = getSession();
+        try {
+            session.beginTransaction();
+
+            Patient patient = session.get(Patient.class, patientId);
+            if (patient != null) {
+                System.out.println("🧍 Patient: " + patient.getName());
+                System.out.println("📝 Medical History: " + patient.getMedicalHistory());
+            } else {
+                System.out.println("❌ Patient not found.");
+            }
+
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            System.err.println("❌ Error retrieving history: " + e.getMessage());
         }
     }
 
