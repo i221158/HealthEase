@@ -1,55 +1,197 @@
 package com.example.cry.test;
-import com.example.cry.model.*;
+
 import com.example.cry.system.SystemManager;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import java.util.List;
+import com.example.cry.model.Admin;
+import com.example.cry.model.Doctor;
+import com.example.cry.model.Patient;
+import com.example.cry.model.User;
+import java.util.Scanner;
 import java.time.LocalDateTime;
 
+
 public class Test {
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final SystemManager sys = new SystemManager();
+
     public static void main(String[] args) {
         try {
-            System.setProperty("java.library.path", "C:\\Users\\sawab\\.jdks\\openjdk-24\\bin");
-
-            try {
-                System.load("C:\\Users\\sawab\\.jdks\\openjdk-24\\bin\\mssql-jdbc_auth-12.4.2.x64.dll");
-                System.out.println("✅ DLL loaded manually.");
-            } catch (UnsatisfiedLinkError e) {
-                System.out.println("❌ Failed to load DLL manually: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-            // Load SQL Server Driver
+            System.load("C:\\Users\\sawab\\.jdks\\openjdk-24\\bin\\mssql-jdbc_auth-12.4.2.x64.dll");
+            System.out.println("✅ DLL loaded manually.");
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             System.out.println("✅ SQL Server Driver Loaded Successfully!");
 
-            // Load Hibernate configuration
-//            SessionFactory factory = new Configuration()
-//                    .configure("hibernate.cfg.xml")
-//                    .addAnnotatedClass(User.class)
-//                    .addAnnotatedClass(Patient.class)
-//                    .addAnnotatedClass(Doctor.class)
-//                    .addAnnotatedClass(Appointment.class)
-//                    .addAnnotatedClass(Notification.class)
-//                    .buildSessionFactory();
+            while (true) {
+                System.out.println("\n=== Health Clinic System ===");
+                System.out.println("1. Login");
+                System.out.println("2. Register Patient");
+                System.out.println("3. Register Doctor");
+                System.out.println("4. Exit");
+                System.out.print("Select: ");
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // consume newline
 
-            SystemManager sys = new SystemManager();
-
-            // Test: Add a new patient
-            sys.registerPatient("Test Patient", "test@patient.com", "0987654321", "hashed123", "No known allergies.");
-
-            // Test: Add a new doctor
-            sys.registerDoctor("Dr. Zain", "zain@clinic.com", "0987654321", "docpass123", "Neurology", "D1009");
-
-            sys.sendNotification(2, "Your appointment is tomorrow at 9 AM.");
-            sys.scheduleAppointment(2, 7, LocalDateTime.now().plusDays(1));
-            sys.listAppointments();
-            sys.close();
-//            factory.close();
+                switch (choice) {
+                    case 1 -> loginUser();
+                    case 2 -> registerPatient();
+                    case 3 -> registerDoctor();
+                    case 4 -> {
+                        sys.close();
+                        return;
+                    }
+                    default -> System.out.println("❌ Invalid option");
+                }
+            }
         } catch (Exception e) {
-            System.err.println("❌ Hibernate connection failed: " + e.getMessage());
+            System.err.println("❌ Startup error: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private static void loginUser() {
+        System.out.print("📧 Email: ");
+        String email = scanner.nextLine();
+        System.out.print("🔒 Password: ");
+        String password = scanner.nextLine();
+
+        User user = sys.loginUser(email, password);
+        if (user == null) return;
+
+        switch (user.getRole()) {
+            case "PATIENT" -> patientMenu((Patient) user);
+            case "DOCTOR" -> doctorMenu((Doctor) user);
+            case "ADMIN" -> adminMenu((Admin) user);
+            default -> System.out.println("❌ Unknown role.");
+        }
+    }
+
+    private static void patientMenu(Patient patient) {
+        while (true) {
+            System.out.println("\n👤 Patient Menu");
+            System.out.println("1. Book Appointment");
+            System.out.println("2. Cancel Appointment");
+            System.out.println("3. View My Appointments");
+            System.out.println("4. Check Notifications");
+            System.out.println("5. Logout");
+            System.out.print("Select: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1 -> {
+                        sys.scheduleAppointment(patient.getUserId());
+
+                }
+                case 2 -> {
+                    sys.cancelAppointment(patient.getUserId(), "PATIENT");
+                }
+                case 3 -> sys.viewAppointmentsForUser(patient.getUserId());
+                case 4 -> sys.viewNotifications(patient.getUserId());
+                case 5 -> { return; }
+                default -> System.out.println("❌ Invalid option");
+            }
+        }
+    }
+
+    private static void doctorMenu(Doctor doctor) {
+        while (true) {
+            System.out.println("\n🩺 Doctor Menu");
+            System.out.println("1. Check My Appointments");
+            System.out.println("2. Cancel Appointment");
+            System.out.println("3. Check Notifications");
+            System.out.println("4. Manage Patient Medical History");
+            System.out.println("5. Logout");
+            System.out.print("Select: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1 -> sys.viewAppointmentsForUser(doctor.getUserId());
+                case 2 -> {
+
+                    sys.cancelAppointment(doctor.getUserId(), "DOCTOR");
+                }
+                case 3 -> sys.viewNotifications(doctor.getUserId());
+                case 4 -> {
+                    System.out.print("Patient ID: ");
+                    int pid = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Updated History: ");
+                    String hist = scanner.nextLine();
+                    sys.updatePatientHistory(pid, hist);
+                }
+                case 5 -> { return; }
+                default -> System.out.println("❌ Invalid option");
+            }
+        }
+    }
+
+    private static void adminMenu(Admin admin) {
+        while (true) {
+            System.out.println("\n🔐 Admin Menu");
+            System.out.println("1. Add User");
+            System.out.println("2. Remove User");
+            System.out.println("3. Remove Doctor");
+            System.out.println("4. View All Patients");
+            System.out.println("5. View All Doctors");
+            System.out.println("6. View All Appointments");
+            System.out.println("7. Logout");
+            System.out.print("Select: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1 -> {
+                    System.out.print("Enter user role to add (PATIENT/DOCTOR/ADMIN): ");
+                    String role = scanner.nextLine();
+                    sys.addUserAsAdmin(role, scanner);
+                }
+                case 2 -> {
+                    System.out.print("User ID: ");
+                    sys.removeUser(scanner.nextInt());
+                }
+                case 3 -> {
+                    System.out.print("Doctor ID: ");
+                    sys.removeDoctor(scanner.nextInt());
+                }
+                case 4 -> sys.viewAllPatients();
+                case 5 -> sys.viewAllDoctors();
+                case 6 -> sys.listAppointments();
+                case 7 -> { return; }
+                default -> System.out.println("❌ Invalid option");
+            }
+        }
+    }
+
+    private static void registerPatient() {
+        System.out.print("👤 Name: ");
+        String name = scanner.nextLine();
+        System.out.print("📧 Email: ");
+        String email = scanner.nextLine();
+        System.out.print("📱 Phone: ");
+        String phone = scanner.nextLine();
+        System.out.print("🔒 Password: ");
+        String pass = scanner.nextLine();
+        System.out.print("📋 Medical History: ");
+        String hist = scanner.nextLine();
+
+        sys.registerPatient(name, email, phone, pass, hist);
+    }
+
+    private static void registerDoctor() {
+        System.out.print("👤 Name: ");
+        String name = scanner.nextLine();
+        System.out.print("📧 Email: ");
+        String email = scanner.nextLine();
+        System.out.print("📱 Phone: ");
+        String phone = scanner.nextLine();
+        System.out.print("🔒 Password: ");
+        String pass = scanner.nextLine();
+        System.out.print("💼 Specialization: ");
+        String spec = scanner.nextLine();
+        System.out.print("📄 License #: ");
+        String license = scanner.nextLine();
+        System.out.print("Available? (true/false):");
+        boolean availability = scanner.nextLine().equals("true");
+        System.out.print("Available Time (Mon-Fri 12:00 AM - 11:59 PM): ");
+        String availableTime = scanner.nextLine();
+
+
+        sys.registerDoctor(name, email, phone, pass, spec, license,availability, availableTime );
     }
 }

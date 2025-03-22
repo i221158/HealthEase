@@ -3,10 +3,20 @@ package com.example.cry.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Admins") // Optional: You can use Users table only if you want
+@Table(name = "Admins")
 @PrimaryKeyJoinColumn(name = "adminID")
 public class Admin extends User {
-    // You can add admin-specific fields here if needed
+    private String permissions;
 
     // Getters and Setters
+    public Admin() {
+        super();
+    }
+    public String getPermissions() {
+        return permissions;
+    }
+    public void setPermissions(String permissions) {
+        this.permissions = permissions;
+    }
+
 }
