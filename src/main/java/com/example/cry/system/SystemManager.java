@@ -4,7 +4,9 @@ import com.example.cry.model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.DayOfWeek;
@@ -26,8 +28,43 @@ public class SystemManager {
         System.out.println("Patient stored successfully.");
 
     }
-    private void sendConfirmationEmail(String email, String name) {
-        System.out.println("📧 Confirmation email sent to " + name + " at " + email);
+    private void sendConfirmationEmail(String email, String name,String message) {
+        sendEmail(email,"Notification from Hospital Management System",message);
+        //System.out.println("📧 Confirmation email sent to " + name + " at " + email);
+    }
+    public static void sendEmail(String to, String subject, String messageText) {
+        final String from = "i221158@nu.edu.pk";
+        final String password = "umtxkgbmzcvnjtvy";  // App Password
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.debug", "true");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
+        javax.mail.Session mailSession = javax.mail.Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, password);
+            }
+        });
+
+
+        try {
+            Message message = new MimeMessage(mailSession);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+            message.setText(messageText);
+
+            System.out.println("📨 Attempting to send email...");
+            Transport.send(message);
+            System.out.println("✅ Email sent successfully to " + to);
+        } catch (MessagingException e) {
+            System.err.println("❌ Email sending failed: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public SystemManager() {
@@ -62,7 +99,7 @@ public class SystemManager {
                     System.out.println("❌ User with this email already exists.");
                 } else {
                     registerPatient(name, email, phone, password, history);
-                    sendConfirmationEmail(email,name);
+                    sendConfirmationEmail(email,name,"You are added as a patient in to the system");
                     System.out.println("✅ Patient added by admin.");
                 }
             }
@@ -80,12 +117,16 @@ public class SystemManager {
                 String specialization = scanner.nextLine();
                 System.out.print("🪪 License Number: ");
                 String license = scanner.nextLine();
+                System.out.print("Available:");
+                String availability = scanner.nextLine();
+                System.out.print("Available Hours(e.g Mon-Wed 08:00-17:00:");
+                String availabilityHours = scanner.nextLine();
 
                 if (checkIfUserExists(email)) {
                     System.out.println("❌ User with this email already exists.");
                 } else {
                     registerDoctor(name, email, phone, password, specialization, license,false,"-");
-                    sendConfirmationEmail(email,name);
+                    sendConfirmationEmail(email,name,"You are added as a doctor in to the system");
                     System.out.println("✅ Doctor added by admin.");
                 }
             }
@@ -112,10 +153,9 @@ public class SystemManager {
                         admin.setPhone(phone);
                         admin.setPasswordHash(password);
                         admin.setRole("ADMIN");
-                        admin.setPermissions("ALL");
                         session.persist(admin);
                         session.getTransaction().commit();
-                        sendConfirmationEmail(email,name);
+                        sendConfirmationEmail(email,name,"You are added as an admin in to the system");
                         System.out.println("✅ Admin added.");
                     } catch (Exception e) {
                         session.getTransaction().rollback();
@@ -145,7 +185,7 @@ public class SystemManager {
         p.setMedicalHistory(history);
 
         storePatient(p);
-            sendConfirmationEmail(email, name);
+            sendConfirmationEmail(email, name,"You are registered as a patient.");
             System.out.println("✅ Patient registered.");
 
     }
@@ -186,6 +226,7 @@ public class SystemManager {
             d.setAvailabilityHours(availabilityTime);
             session.persist(d);
             session.getTransaction().commit();
+            sendConfirmationEmail(email, name,"You are registered as a doctor.");
             System.out.println("✅ Doctor registered.");
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -230,7 +271,7 @@ public class SystemManager {
         try {
             session.beginTransaction();
 
-            // 1. Show available doctors
+            //show available doctors
             List<Doctor> availableDoctors = session.createQuery(
                     "FROM Doctor WHERE availability = true AND availabilityHours IS NOT NULL", Doctor.class
             ).getResultList();
@@ -247,7 +288,7 @@ public class SystemManager {
                         " | Available Hours: " + doc.getAvailabilityHours());
             }
 
-            // 2. Select doctor
+            //select doctor
             Scanner sc = new Scanner(System.in);
             System.out.print("Enter Doctor ID to book with: ");
             int doctorId = sc.nextInt();
@@ -261,7 +302,7 @@ public class SystemManager {
 
             System.out.println("📅 Doctor " + doctor.getName() + " is available at: " + doctor.getAvailabilityHours());
 
-            // 3. Input appointment time
+            //input appointment time
             System.out.print("Enter appointment date (yyyy-MM-dd): ");
             String date = sc.nextLine();
             System.out.print("Enter appointment time (HH:mm): ");
@@ -271,25 +312,26 @@ public class SystemManager {
             String day = dateTime.getDayOfWeek().toString().substring(0, 1).toUpperCase() +
                     dateTime.getDayOfWeek().toString().substring(1, 3).toLowerCase(); // Converts MONDAY to "Mon"
 
-            // 4. Check if day/time is in availability
+            //check if day/time is in availability
             if (!isTimeWithinAvailability(doctor.getAvailabilityHours(), day, dateTime.toLocalTime())) {
                 System.out.println("❌ Selected time is not within doctor's available hours.");
                 return;
             }
 
-            // 5. Check if already booked
+            //check if slot is booked with an appointment that is not canceled
             boolean isBooked = session.createQuery(
-                            "FROM Appointment WHERE doctor.id = :docId AND appointmentDate = :dateTime", Appointment.class)
+                            "SELECT COUNT(a) FROM Appointment a " +
+                                    "WHERE a.doctor.id = :docId AND a.appointmentDate = :dateTime AND a.status != 'CANCELED'", Long.class)
                     .setParameter("docId", doctorId)
                     .setParameter("dateTime", dateTime)
-                    .getResultList().size() > 0;
+                    .uniqueResult() > 0;
 
             if (isBooked) {
                 System.out.println("❌ This slot is already booked. Please choose another time.");
                 return;
             }
 
-            // 6. Book appointment
+            //book appointment
             Patient patient = session.get(Patient.class, patientId);
             if (patient == null) {
                 System.out.println("❌ Patient not found.");
@@ -304,13 +346,16 @@ public class SystemManager {
 
             session.persist(appt);
 
-            // 7. Send Notification
+            //sending Notification
             Notification notification = new Notification();
             notification.setUser(patient);
             notification.setMessage("✅ Appointment booked with Dr. " + doctor.getName() +
                     " on " + dateTime.toLocalDate() + " at " + dateTime.toLocalTime());
             notification.setTimestamp(LocalDateTime.now());
             session.persist(notification);
+            //sending confirmation email
+            sendConfirmationEmail(patient.getEmail(), patient.getName(), "Appointment is booked with doctor " + doctor.getName() + " on " + dateTime.toLocalDate() + " at " + dateTime.toLocalTime());
+            sendConfirmationEmail(doctor.getEmail(), doctor.getName(), "Patient " + patient.getName() + " has booked an appointment with you on " + dateTime.toLocalDate() + " at " + dateTime.toLocalTime());
 
             session.getTransaction().commit();
             System.out.println("✅ Appointment booked and confirmation notification sent!");
@@ -579,13 +624,13 @@ public class SystemManager {
             toPatient.setMessage("Dear " + appt.getPatient().getName() + ", " + cancelMsg);
             toPatient.setTimestamp(now);
             session.persist(toPatient);
-
+            sendConfirmationEmail(appt.getDoctor().getEmail(), appt.getDoctor().getName(), cancelMsg);
             Notification toDoctor = new Notification();
             toDoctor.setUser(appt.getDoctor());
             toDoctor.setMessage("Dear Dr. " + appt.getDoctor().getName() + ", " + cancelMsg);
             toDoctor.setTimestamp(now);
             session.persist(toDoctor);
-
+            sendConfirmationEmail(appt.getPatient().getEmail(), appt.getPatient().getName(), cancelMsg);
             session.getTransaction().commit();
             System.out.println("❌ Appointment canceled successfully.");
 
@@ -692,3 +737,4 @@ public class SystemManager {
     }
 
 }
+

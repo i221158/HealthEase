@@ -6,6 +6,7 @@ import com.example.cry.model.Doctor;
 import com.example.cry.model.Patient;
 import com.example.cry.model.User;
 import java.util.Scanner;
+import javax.mail.*;
 import java.time.LocalDateTime;
 
 
@@ -19,7 +20,8 @@ public class Test {
             System.out.println("✅ DLL loaded manually.");
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             System.out.println("✅ SQL Server Driver Loaded Successfully!");
-
+            Session session1 = null;
+            System.out.println("JavaMail is working.");
             while (true) {
                 System.out.println("\n=== Health Clinic System ===");
                 System.out.println("1. Login");
