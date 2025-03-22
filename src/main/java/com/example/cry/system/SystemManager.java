@@ -9,13 +9,9 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
-import java.time.LocalDate;
-import java.util.Arrays;
 
 public class SystemManager {
 

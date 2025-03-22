@@ -11,4 +11,5 @@ public class Patient extends User {
 
     public String getMedicalHistory() { return medicalHistory; }
     public void setMedicalHistory(String medicalHistory) { this.medicalHistory = medicalHistory; }
+
     }
