@@ -75,7 +75,7 @@ mvn spring-boot:run
 
 ## 📌 **Project Management**  
 🔹 **GitHub Repo:** [Link](https://github.com/i221158/HealthClinicSystem)  
-🔹 **Trello Board:** [Link].(https://trello.com/b/o6fMUo68/sprint-1-backlog)
+🔹 **Trello Board:** https://trello.com/b/o6fMUo68/sprint-1-backlog
 
 ## 👥 **Contributors**  
 - **[Your Name]** – UI Designer & Tester 🎨  
