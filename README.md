@@ -47,7 +47,7 @@ cd HealthClinicSystem
 ```
 
 ### **2️⃣ Set Up the Database**  
-- Install MySQL  
+- Install Microsoft SQL server
 - Create a database `health_clinic_db`  
 - Configure **application.properties** for DB connection  
 
