@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - HealthEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-blue-500 p-4 text-white flex justify-between">
+        <h1 class="text-xl font-bold">HealthEase - Book Appointment</h1>
+        <a href="dashboard.html" class="bg-gray-500 px-4 py-2 rounded">Back to Dashboard</a>
+    </nav>
+    
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold text-gray-700 text-center">Book an Appointment</h2>
+        
+        <form id="appointmentForm" class="bg-white p-6 rounded-lg shadow-md mt-4">
+            <label class="block text-gray-600">Select Doctor:</label>
+            <select id="doctor" class="w-full border p-2 rounded mt-1">
+                <option value="Dr. Ahmed Khan">Dr. Ahmed Khan (Cardiologist - Karachi)</option>
+                <option value="Dr. Sara Ali">Dr. Sara Ali (Dermatologist - Lahore)</option>
+                <option value="Dr. Usman Farooq">Dr. Usman Farooq (Orthopedic - Islamabad)</option>
+            </select>
+            
+            <label class="block text-gray-600 mt-3">Select Date:</label>
+            <input type="date" id="appointmentDate" class="w-full border p-2 rounded" required>
+            
+            <label class="block text-gray-600 mt-3">Select Time:</label>
+            <input type="time" id="appointmentTime" class="w-full border p-2 rounded" required>
+            
+            <button type="submit" class="w-full bg-green-500 text-white p-2 rounded mt-4 hover:bg-green-600">Book Appointment</button>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById("appointmentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const doctor = document.getElementById("doctor").value;
+            const date = document.getElementById("appointmentDate").value;
+            const time = document.getElementById("appointmentTime").value;
+            
+            alert(`Appointment booked successfully with ${doctor} on ${date} at ${time}.`);
+            window.location.href = "dashboard.html";
+        });
+    </script>
+</body>
+</html>
