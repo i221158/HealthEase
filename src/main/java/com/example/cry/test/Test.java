@@ -192,7 +192,7 @@ public class Test {
         String license = scanner.nextLine();
         System.out.print("Available? (true/false):");
         boolean availability = scanner.nextLine().equals("true");
-        System.out.print("Available Time (Mon-Fri 12:00 AM - 11:59 PM): ");
+        System.out.print("Available Time (Mon-Fri 12:00-11:59): ");
         String availableTime = scanner.nextLine();
 
 
