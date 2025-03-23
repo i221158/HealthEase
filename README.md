@@ -78,9 +78,9 @@ mvn spring-boot:run
 🔹 **Trello Board:** https://trello.com/b/o6fMUo68/sprint-1-backlog
 
 ## 👥 **Contributors**  
-- **[Your Name]** – UI Designer & Tester 🎨  
-- **[Teammate 1]** – Backend Developer 💻  
-- **[Teammate 2]** – Database & API Development 🛢  
+- **Aqsa Malik** – UI Designer & Tester 🎨  
+- **Sawab and Tooba** – Backend Developer 💻  
+- **Sawab and Tooba** – Database & API Development 🛢  
 
 ## 📜 **License**  
 This project is licensed under the **MIT License** – feel free to modify and use it.  
