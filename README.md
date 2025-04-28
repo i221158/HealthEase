@@ -5,12 +5,12 @@
 The **Health Clinic Appointment System** is designed to allow patients to book, cancel, and manage medical appointments while enabling doctors to set availability and track schedules. Administrators oversee user management, ensuring secure access and data integrity.  
 
 ## 🚀 **Features**  
-✅ **User Authentication** – Patients, doctors, and admins can register and log in securely.  
-✅ **Appointment Management** – Patients can book, reschedule, or cancel appointments.  
-✅ **Doctor Availability** – Doctors can update their available slots.  
-✅ **Email Notifications** – Automatic confirmations and reminders for appointments.  
-✅ **Admin Controls** – Approve doctor registrations, manage users, and monitor system activity.  
-✅ **Automated Reminders** – Sends notifications to patients and doctors for upcoming appointments.  
+ **User Authentication** – Patients, doctors, and admins can register and log in securely.  
+ **Appointment Management** – Patients can book, reschedule, or cancel appointments.  
+ **Doctor Availability** – Doctors can update their available slots.  
+ **Email Notifications** – Automatic confirmations and reminders for appointments.  
+ **Admin Controls** – Approve doctor registrations, manage users, and monitor system activity.  
+ **Automated Reminders** – Sends notifications to patients and doctors for upcoming appointments.  
 
 ## 🛠 **Tech Stack**  
 - **Backend:** Java, Spring Boot, Hibernate  
@@ -42,7 +42,7 @@ The **Health Clinic Appointment System** is designed to allow patients to book, 
 ## 🔧 **Installation & Setup**  
 ### **1️⃣ Clone the Repository**  
 ```bash
-git clone https://github.com/your-username/HealthClinicSystem.git
+git clone https://github.com/i221158/HealthClinicSystem.git
 cd HealthClinicSystem
 ```
 
