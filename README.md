@@ -3,6 +3,7 @@
 
 ## 📌 **Project Overview**  
 The **Health Clinic Appointment System** is designed to allow patients to book, cancel, and manage medical appointments while enabling doctors to set availability and track schedules. Administrators oversee user management, ensuring secure access and data integrity.  
+Final Report: https://docs.google.com/document/d/1EPJR-NVAgcS48rL3WS7-6_84vQE9aRxAVNGMvTVOawA/edit?tab=t.0
 
 ## 🚀 **Features**  
  **User Authentication** – Patients, doctors, and admins can register and log in securely.  
@@ -76,6 +77,7 @@ mvn spring-boot:run
 ## 📌 **Project Management**  
 🔹 **GitHub Repo:** [Link](https://github.com/i221158/HealthClinicSystem)  
 🔹 **Trello Board:** https://trello.com/b/o6fMUo68/sprint-1-backlog
+
 
 ## 👥 **Contributors**  
 - **Aqsa Malik** – UI Designer & Tester 🎨  
