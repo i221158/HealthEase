@@ -6,7 +6,7 @@ import java.util.Date;
 @Entity
 @Table(name = "Feedback")
 public class Feedback {
-
+    //njgjg
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int feedbackID;
