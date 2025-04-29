@@ -4,6 +4,7 @@
 ## 📌 **Project Overview**  
 The **Health Clinic Appointment System** is designed to allow patients to book, cancel, and manage medical appointments while enabling doctors to set availability and track schedules. Administrators oversee user management, ensuring secure access and data integrity.  
 Final Report: https://docs.google.com/document/d/1EPJR-NVAgcS48rL3WS7-6_84vQE9aRxAVNGMvTVOawA/edit?tab=t.0
+Presentation: https://www.canva.com/design/DAGl8MKTv6I/mQzkDAFr65rlbFa4_Mse-Q/edit?utm_content=DAGl8MKTv6I&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 ## 🚀 **Features**  
  **User Authentication** – Patients, doctors, and admins can register and log in securely.  
