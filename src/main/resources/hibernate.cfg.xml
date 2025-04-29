@@ -1,26 +1,25 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
 <hibernate-configuration>
     <session-factory>
-        <!-- SQL Server JDBC Driver -->
-        <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-
-        <!-- Connection URL using Windows Authentication -->
-        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=HealthClinicDB;integratedSecurity=true;encrypt=false</property>
-
-        <!-- No username and password needed for Windows Authentication -->
-
-        <!-- SQL Server Dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
-
-        <!-- Show SQL Queries -->
+        <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+        <property name="hibernate.connection.url">jdbc:sqlserver://DELL-I5\SQLEXPRESS:1433;databaseName=HealthClinicDB;encrypt=false</property>
+        <property name="hibernate.connection.username">ta</property>
+        <property name="hibernate.connection.password">12345678</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
-        <property name="hibernate.current_session_context_class">thread</property>
-
-        <mapping class="com.example.cry.model.Patient"/>
-        <mapping class="com.example.cry.model.User"/>
-        <mapping class="com.example.cry.model.Doctor"/>
-        <mapping class="com.example.cry.model.Appointment"/>
-        <mapping class="com.example.cry.model.Notification"/>
+        <mapping class="com.example.Patient"/>
+        <mapping class="com.example.User"/>
+        <mapping class="com.example.Doctor"/>
+        <mapping class="com.example.Appointment"/>
+        <mapping class="com.example.Notification"/>
+        <mapping class="com.example.Feedback"/>
+        <mapping class="com.example.DoctorAvailabilityHours"/>
 
     </session-factory>
 </hibernate-configuration>
