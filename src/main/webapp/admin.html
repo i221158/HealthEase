@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - HealthEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-md w-96">
+        <h2 class="text-2xl font-bold text-center text-gray-700">Admin Login</h2>
+        
+        <div class="mt-4">
+            <label class="block text-gray-600">Email</label>
+            <input type="email" id="adminEmail" class="w-full p-2 border rounded mt-1" placeholder="Enter admin email">
+        </div>
+        
+        <div class="mt-4">
+            <label class="block text-gray-600">Password</label>
+            <input type="password" id="adminPassword" class="w-full p-2 border rounded mt-1" placeholder="Enter admin password">
+        </div>
+        
+        <button onclick="adminLogin()" class="w-full bg-blue-500 text-white p-2 rounded mt-4 hover:bg-blue-600">Login</button>
+        
+        <p id="errorMessage" class="text-red-500 text-center mt-2 hidden">Invalid credentials!</p>
+    </div>
+    
+    <script>
+        function adminLogin() {
+            const email = document.getElementById("adminEmail").value;
+            const password = document.getElementById("adminPassword").value;
+            const fixedEmail = "admin@healthease.com";
+            const fixedPassword = "admin123";
+            
+            if (email === fixedEmail && password === fixedPassword) {
+                alert("Login successful!");
+                window.location.href = "dashboard.html";
+            } else {
+                document.getElementById("errorMessage").classList.remove("hidden");
+            }
+        }
+    </script>
+</body>
+</html>

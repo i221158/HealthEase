@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - HealthEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-blue-500 p-4 text-white flex justify-between">
+        <h1 class="text-xl font-bold">HealthEase Dashboard</h1>
+        <div>
+            <a href="email_reminders.html" class="px-3 py-1 bg-purple-500 rounded hover:bg-purple-600 text-sm">Emails</a>
+            <button onclick="logout()" class="bg-red-500 px-3 py-1 rounded ml-2 text-sm">Logout</button>
+        </div>
+    </nav>
+    
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-bold text-gray-700">Welcome, <span id="userName">User</span></h2>
+        <div id="dashboardContent" class="mt-4"></div>
+    </div>
+    
+    <script>
+        // Fetching user role from localStorage
+        const userType = localStorage.getItem("userType");
+        const userName = localStorage.getItem("userName") || "Guest";
+        document.getElementById("userName").textContent = userName;
+        const dashboardContent = document.getElementById("dashboardContent");
+        
+        function logout() {
+            alert("Logging out...");
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+        
+        function loadDashboard() {
+            if (userType === "doctor") {
+                window.location.href = "doctor-dashboard.html";
+            } else if (userType === "admin") {
+                window.location.href = "admin-dashboard.html";
+            } else {
+                dashboardContent.innerHTML = `
+                    <h3 class='text-xl font-bold text-gray-700'>Patient Dashboard</h3>
+                    <div class="grid grid-cols-1 gap-2">
+                        <a href="book-appointment.html" class="block bg-green-500 text-white p-2 rounded text-center text-sm">Book Appointment</a>
+                        <a href="cancel-appointment.html" class="block bg-red-500 text-white p-2 rounded text-center text-sm">Cancel Appointment</a>
+                        <a href="notifications.html" class="block bg-blue-500 text-white p-2 rounded text-center text-sm">View Notifications</a>
+                    </div>
+                `;
+            }
+        }
+        
+        loadDashboard();
+    </script>
+</body>
+</html>

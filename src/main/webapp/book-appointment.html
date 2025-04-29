@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - HealthEase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<nav class="bg-blue-500 p-4 text-white flex justify-between">
+    <h1 class="text-xl font-bold">HealthEase - Book Appointment</h1>
+    <a href="dashboard.html" class="bg-gray-500 px-4 py-2 rounded">Back to Dashboard</a>
+</nav>
+
+<div class="container mx-auto p-6">
+    <h2 class="text-2xl font-bold text-gray-700 text-center mb-4">Book an Appointment</h2>
+
+    <div id="messageDiv" class="hidden text-center text-red-600 mt-4"></div>
+
+    <form id="appointmentForm" action="bookAppointment" method="post" class="bg-white p-6 rounded-lg shadow-md">
+        <div class="mb-4">
+            <label class="block text-gray-600 mb-2">Select Doctor:</label>
+            <select id="doctor" name="doctorId" class="w-full border p-2 rounded" required>
+                <!-- Doctors will load dynamically -->
+            </select>
+        </div>
+
+        <div class="mb-5">
+            <label class="block text-gray-600 mb-2">Select Time Slot:</label>
+            <select id="slot" name="slotId" class="w-full border p-2 rounded" required>
+                <!-- Slots will load dynamically -->
+            </select>
+        </div>
+
+        <div class="h-10"></div>
+        <button type="submit" class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">
+            Book Appointment
+        </button>
+    </form>
+</div>
+
+<script>
+    window.onload = function () {
+        loadDoctors();
+
+        document.getElementById('doctor').addEventListener('change', function () {
+            const doctorId = this.value;
+            loadSlots(doctorId);
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        if (message) {
+            const messageDiv = document.getElementById('messageDiv');
+            messageDiv.classList.remove('hidden');
+            messageDiv.textContent = decodeURIComponent(message);
+        }
+    };
+
+    function loadDoctors() {
+        fetch('bookAppointment?action=getDoctors')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No doctors found.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const doctorSelect = document.getElementById('doctor');
+                doctorSelect.innerHTML = '';
+
+                if (data.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No doctors available';
+                    doctorSelect.appendChild(option);
+                    doctorSelect.disabled = true;
+                } else {
+                    doctorSelect.disabled = false;
+                    data.forEach(doc => {
+                        const option = document.createElement('option');
+                        option.value = doc.userId;
+                        option.textContent = `Dr. ${doc.name} (${doc.specialization})`;
+                        doctorSelect.appendChild(option);
+                    });
+
+                    // Automatically load slots for the first doctor
+                    if (data.length > 0) {
+                        loadSlots(data[0].userId);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error loading doctors:', error);
+                document.getElementById('doctor').innerHTML = '<option>Error loading doctors</option>';
+            });
+    }
+
+    function loadSlots(doctorId) {
+        const slotSelect = document.getElementById('slot');
+        slotSelect.innerHTML = '';
+
+        fetch(`availableSlots?action=getAvailableSlots&doctorID=${doctorId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No available slots.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.length === 0) {
+                    const option = document.createElement('option');
+                    option.text = "No slots available";
+                    option.disabled = true;
+                    slotSelect.appendChild(option);
+                } else {
+                    slotSelect.disabled = false;
+                    data.forEach(slot => {
+                        const date = new Date(slot.appointmentDate);
+
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const hours = String(date.getHours()).padStart(2, '0');
+                        const minutes = String(date.getMinutes()).padStart(2, '0');
+                        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+                        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+                        const option = document.createElement('option');
+                        option.value = `${doctorId}_${formattedDate}`; // <-- FIX: use passed doctorId
+                        option.textContent = date.toLocaleString();
+                        slotSelect.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading slots:', error);
+                slotSelect.innerHTML = '<option>Error loading slots</option>';
+            });
+    }
+</script>
+
+</body>
+</html>
