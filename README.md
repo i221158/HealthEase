@@ -17,7 +17,7 @@ Presentation: https://www.canva.com/design/DAGl8MKTv6I/mQzkDAFr65rlbFa4_Mse-Q/ed
 ## 🛠 **Tech Stack**  
 - **Backend:** Java, Spring Boot, Hibernate  
 - **Frontend:** HTML, CSS, JavaScript  
-- **Database:** MySQL  
+- **Database:** Microsoft SQL  
 - **Version Control:** Git & GitHub  
 - **Task Management:** Trello  
 - **Deployment:** TBD (Cloud / Local Server)  
